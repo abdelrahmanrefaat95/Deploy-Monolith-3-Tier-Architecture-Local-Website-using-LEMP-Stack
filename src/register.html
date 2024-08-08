@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+
+    <div style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); max-width: 400px; width: 100%; text-align: center;">
+
+        <h1 style="margin-bottom: 20px; color: #333;">Registration</h1>
+       
+
+        <form action="register.php" method="post" style="text-align: left;">
+            <label for="username" style="display: block; margin-bottom: 5px;">Username:</label>
+            <input type="text" id="username" name="username" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px;">
+
+            <label for="password" style="display: block; margin-bottom: 5px;">Password:</label>
+            <input type="password" id="password" name="password" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px;">
+
+            <label for="category" style="display: block; margin-bottom: 5px;">Category:</label>
+            <input type="text" id="category" name="category" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px;">
+
+            <button type="submit" style="background-color: #007bff; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">Register</button>
+        </form>
+
+        <p style="margin-top: 10px;">Already registered? <a href="login.html" style="color: #007bff; text-decoration: none;">Login here</a></p>
+
+    </div>
+
+</body>
+</html>
