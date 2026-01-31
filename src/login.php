@@ -1,29 +1,26 @@
 <?php
-
 ini_set('display_errors', 1);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve username and password from the login form
     $username = $_POST['username'];
     $inputPassword = $_POST['password'];
-
+    
     // Database connection parameters
-    $servername = "192.168.0.188"; // Change this if your database is hosted elsewhere
-    $db_username = "abdelrahman"; // Your MariaDB username
-    $db_password = "123456789"; // Your MariaDB password
-    $database = "demo"; // Your MariaDB database name
-
-    $conn = new mysqli($servername, $db_username, $db_password, $database);
-
+    $servername = "servername"; 
+    $db_username = "username";
+    $db_password = "password";
+    $database = "dbname";
+    $ssl_ca = "ssl cert location";
+    
+    // Create connection with SSL
+    $conn = mysqli_init();
+    $conn->ssl_set(NULL, NULL, $ssl_ca, NULL, NULL);
+    $conn->real_connect($servername, $db_username, $db_password, $database, 3306, NULL, MYSQLI_CLIENT_SSL);
+    
     // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Prepare and execute a query to retrieve the user's hashed password from the database
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-    if (!$stmt) {
-    die("Error preparing statement: " . $conn->error);
     }
 
     $stmt->bind_param("s", $username);
