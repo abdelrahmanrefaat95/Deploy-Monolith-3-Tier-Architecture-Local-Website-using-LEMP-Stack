@@ -1,17 +1,25 @@
 <?php
 // MariaDB database connection settings
-$servername = "192.168.0.188"; // Change this to the IP address of your MariaDB server
-$username = "abdelrahman"; // Change this to your MariaDB username
-$password = "123456789"; // Change this to your MariaDB password
-$database = "demo"; // Change this to your MariaDB database name
+$servername = "rdsDNS"; // Change this to the IP address of your MariaDB server
+$username = "username"; // Change this to your MariaDB username
+$password = "password"; // Change this to your MariaDB password
+$database = "dbname"; // Change this to your MariaDB database name
+$ssl_ca = "SSLCertLocation";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+// Create connection with SSL
+$conn = mysqli_init();
+
+// Set SSL CA certificate
+$conn->ssl_set(NULL, NULL, $ssl_ca, NULL, NULL);
+
+// Connect with SSL flag
+$conn->real_connect($servername, $username, $password, $database, 3306, NULL, MYSQLI_CLIENT_SSL);
 
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
