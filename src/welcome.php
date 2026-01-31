@@ -1,11 +1,14 @@
 <?php
-$host = '192.168.0.188'; // Assuming MariaDB is running on the same machine
-$dbname = 'demo'; // Your MariaDB database name
-$user = 'abdelrahman'; // Your MariaDB username
-$password = '123456789'; // Your MariaDB password
+$host = 'rdsName';
+$dbname = 'dbname';
+$user = 'username';
+$password = 'password';
+$ssl_ca = "ssl-cert-location";  //ssl cert location
 
-// Create a new mysqli connection
-$conn = new mysqli($host, $user, $password, $dbname);
+// Create connection with SSL
+$conn = mysqli_init();
+$conn->ssl_set(NULL, NULL, $ssl_ca, NULL, NULL);
+$conn->real_connect($host, $user, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL);
 
 // Check the connection
 if ($conn->connect_error) {
