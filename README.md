@@ -167,7 +167,7 @@ wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 ```
 mysql -h [rds-dns-endpoint] \
       -P 3306 \
-      -u [master-user] \
+      -u [user-name] \
       --ssl-ca=[PATH]/global-bundle.pem
 
 ```
