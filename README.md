@@ -61,7 +61,7 @@ sudo apt update
 ```
 
 ```
-sudo apt install nginx mariadb-server mariadb-client php8.1 php8.1-fpm php8.1-mysql php-common php8.1-cli php8.1-common php8.1-opcache php8.1-readline php8.1-mbstring php8.1-xml php8.1-gd php8.1-curl -y
+sudo apt install nginx mariadb-client php8.1 php8.1-fpm php8.1-mysql php-common php8.1-cli php8.1-common php8.1-opcache php8.1-readline php8.1-mbstring php8.1-xml php8.1-gd php8.1-curl -y
 
 ```
 
@@ -69,11 +69,11 @@ sudo apt install nginx mariadb-server mariadb-client php8.1 php8.1-fpm php8.1-my
 **Start and enable required services**
 
 ```
-sudo systemctl start nginx mariadb php8.1-fpm
+sudo systemctl start nginx php8.1-fpm
 
 ```
 ```
-sudo systemctl enable nginx mariadb php8.1-fpm
+sudo systemctl enable nginx php8.1-fpm
 ```
 
 **Configure Nginx**
@@ -96,13 +96,13 @@ sudo chown -R www-data:$USER /var/www/[your-website-name]/html/
 ```
 
 ```
-sudo chmod 755 -R /var/www/[your-website-name]/html/
+sudo chmod 755 -R /var/www/[your-webapp-name]/html/
 
 ```
 - Configure The server block of Nginx
 
 ```
-sudo nano /etc/nginx/sites-available/[your-website-name]
+sudo nano /etc/nginx/sites-available/[your-app-name]
 
 ```
 
@@ -114,7 +114,7 @@ server {
     server_name [your-machine-ip or localhost];
 
 
-    root /var/www/demo_website/html; # Replace with the actual path to your website files
+    root /var/www/[your-webapp-name]/html; # Replace with the actual path to your website files
     index register.html register.php  login.html  login.php  style.css  welcome.php logout.php;
     location / {
         try_files $uri $uri/ /index.php$is_args$args;
@@ -155,28 +155,20 @@ sudo systemctl reload nginx
 
 ```
 
-
-**Configure Database and deploy the required tables 
-
-- ensure the mariadb service is properly installed and working
+- make sure that you have downloaded the rds cert bundle and use it to login, you can download it using that command 
 
 ```
-sudo systemctl status mariadb 
+wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
 ```
 
-- install mariadb database service and configure the root password
+- Login to RDS instance using the master user you created earlier
 
 ```
-sudo mysql_secure_installation
-
-```
-accept all defaults by hitting and when prompt, set the root password.
-
-- relogin with root user into your mariadb server
-
-```
-sudo mysql -u root -p 
+mysql -h [rds-dns-endpoint] \
+      -P 3306 \
+      -u [master-user] \
+      --ssl-ca=[PATH]/global-bundle.pem
 
 ```
 
@@ -187,23 +179,17 @@ CREATE DATABASE [db-name];
 
 ```
 
-- Create DB user with password
+- Create Global DB user with password
 
 ```
-CREATE USER [choose-user-name]@localhost IDENTIFIED BY '[chooose a password]';
+CREATE USER [choose-user-name]@'%' IDENTIFIED BY '[chooose a password]';
 
-```
-
-- Grant permissions for that user as admin of all database server
-
-```
-GRANT ALL PRIVILEGES ON *.* TO '[user-name]'@[localhost] IDENTIFIED BY '[password-of-user]';
 ```
 
 - Grant permssions on DB itself for the user
 
 ```
-GRANT ALL PRIVILEGES ON [db-name].* TO [username]@localhost;
+GRANT ALL PRIVILEGES ON [db-name].* TO [username]@'%';
 
 ```
 
@@ -222,7 +208,10 @@ EXIT
 - relogin with the user you just created
 
 ```
-sudo mysql -u [user-name] -p 
+mysql -h [rds-dns-endpoint] \
+      -P 3306 \
+      -u [master-user] \
+      --ssl-ca=[PATH]/global-bundle.pem
 
 ```
 - Create table based on the schema in your website
@@ -254,6 +243,7 @@ exit
     $db_username = "replace-it-with-username-db"; // Your MariaDB username
     $db_password = "replace-it-with-password-db"; // Your MariaDB password
     $database = "replace-it-with-db-name"; // Your MariaDB database name
+    $ssl_ca = "ssl cert location";   // your global-bundle.pem location
 
 ```
 
@@ -265,6 +255,7 @@ $servername = "localhost"; // Change this to the IP address of your MariaDB serv
 $username = "replace-it-with-username-db"; // Change this to your MariaDB username
 $password = "replace-it-with-password-db"; // Change this to your MariaDB password
 $database = "replace-it-with-db-name"; // Change this to your MariaDB database name
+$ssl_ca = "ssl cert location";   // your global-bundle.pem location
 
 ```
 
@@ -275,6 +266,7 @@ $host = 'localhost'; // Assuming MariaDB is running on the same machine
 $dbname = "replace-it-with-password-db"; // Your MariaDB database name
 $user = "replace-it-with-username-db"; // Your MariaDB username
 $password = "replace-it-with-password-db"; // Your MariaDB password
+$ssl_ca = "ssl cert location";   // your global-bundle.pem location
 
 ```
 
