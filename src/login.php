@@ -22,7 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
+// Prepare the statement
+$stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
